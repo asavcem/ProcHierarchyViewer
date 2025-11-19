@@ -12,7 +12,7 @@ namespace ProcHierarchyViewer
 {
     static class Program
     {
-        private const string ConnectionString = "c "; 
+        private const string ConnectionString = "(value)";  
 
         /// <summary>
         /// The main entry point for the application.
