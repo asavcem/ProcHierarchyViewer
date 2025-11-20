@@ -15,6 +15,9 @@ namespace ProcHierarchyViewer.Presenters
         public event Action<List<ProcNode>> OnHierarchyBuilt;
         public event Action<IEnumerable<string>> OnNotFound;
 
+        public event Action<ProcNode> OnFindProcNode;
+        public event Action<string> OnNotProcNode;
+
         public MainPresenter(IProcHierarchyService service)
         {
             _service = service;
@@ -42,8 +45,22 @@ namespace ProcHierarchyViewer.Presenters
             }
 
             OnHierarchyBuilt?.Invoke(result);
-            if (notFound.Count > 0)
+            if (notFound.Count > 0 || result.Count < 1)
                 OnNotFound?.Invoke(notFound);
+        }
+
+        public void SearchProcNode(IEnumerable<ProcNode> procNode, string term)
+        {
+            var result = _service.FindProcNode(procNode, term);
+            
+            if(result != null)
+            {
+                OnFindProcNode?.Invoke(result);
+            }
+            else
+            {
+                OnNotProcNode?.Invoke(term);
+            }
         }
     }
 }

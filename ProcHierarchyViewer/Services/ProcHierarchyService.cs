@@ -60,5 +60,23 @@ namespace ProcHierarchyViewer.Services
                 throw;
             }
         }
+
+        public ProcNode FindProcNode(IEnumerable<ProcNode> nodes, string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+                return null;
+
+            foreach (var node in nodes)
+            {
+                if (node.Name.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return node;
+
+                var found = FindProcNode(node.Children, term);
+                if (found != null)
+                    return found;
+            }
+
+            return null;
+        }
     }
 }

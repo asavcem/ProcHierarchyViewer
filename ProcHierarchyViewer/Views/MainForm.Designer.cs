@@ -73,7 +73,7 @@ namespace ProcHierarchyViewer
             txtRootProc.Height = 60;
             txtRootProc.Multiline = true;
             txtRootProc.ScrollBars = ScrollBars.Vertical;
-            txtRootProc.Text = "dbo.";
+            txtRootProc.Text = "dbo.up_winbank_gns_krreeskont";
             panelTop.Controls.Add(txtRootProc);
 
             btnLoad = new Button();
@@ -93,6 +93,7 @@ namespace ProcHierarchyViewer
 
             txtSearch = new TextBox();
             txtSearch.Left = lblSearch.Right + 5;
+            txtSearch.Text = "dbo.sel_yilsonutarihleri";
             txtSearch.Top = 12;
             txtSearch.Width = 200;
             panelTop.Controls.Add(txtSearch);

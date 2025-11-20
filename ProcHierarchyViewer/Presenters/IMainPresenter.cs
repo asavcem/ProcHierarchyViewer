@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.Design;
 
 namespace ProcHierarchyViewer.Presenters
 {
@@ -17,5 +18,14 @@ namespace ProcHierarchyViewer.Presenters
 
         /// <summary>Bulunamayan SP isimlerini döner.</summary>
         event Action<IEnumerable<string>> OnNotFound;
+
+        /// <summary>Dönen SP Listesi içinde arama yapar</summary>
+        void SearchProcNode(IEnumerable<ProcNode> procNode, string term);
+
+        /// <summary>Liste içerisinde olan SP bilgileri</summary>
+        event Action<ProcNode> OnFindProcNode;
+
+        ///<summary>Liste içerisinde bulanamayan SP bilgisi</summary>
+        event Action<string> OnNotProcNode;
     }
 }

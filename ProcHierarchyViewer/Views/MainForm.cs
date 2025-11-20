@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,9 +17,8 @@ namespace ProcHierarchyViewer
     public partial class MainForm : Form, IMainView
     {
         private readonly IMainPresenter _presenter;
-
-
         private SplitContainer splitContainer;
+        private List<ProcNode> currentRoots = new List<ProcNode>();
 
         public MainForm(IMainPresenter presenter)
         {
@@ -27,15 +27,22 @@ namespace ProcHierarchyViewer
 
             _presenter.OnHierarchyBuilt += DisplayTree;
             _presenter.OnNotFound += DisplayNotFound;
+
+            _presenter.OnFindProcNode += SelectedProcNode;
+            _presenter.OnNotProcNode += DisplayNotFoundWord;
+
         }
 
         public void DisplayTree(IEnumerable<ProcNode> roots)
         {
+            //Arama işlemi için atama yapılıyor.
+            currentRoots = roots.ToList();
+
             treeView.Nodes.Clear();
             foreach (var node in roots)
             {
                 treeView.Nodes.Add(BuildTreeNode(node));
-                
+
             }
             treeView.CollapseAll();
         }
@@ -46,10 +53,24 @@ namespace ProcHierarchyViewer
                             "SP Bulunamadı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
+        public void DisplayNotFoundWord(string missing)
+        {
+            MessageBox.Show("Aşağıdaki SP listede bulunamadı:\n" + string.Join("\n", missing),
+                            "SP Bulunamadı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        public void SelectedProcNode(ProcNode value)
+        {
+            var found = FindTreeNodeByProc(treeView.Nodes, value);
+
+            treeView.SelectedNode = found;
+            found.EnsureVisible();
+        }
+
         // Recursive helper to convert ProcNode to TreeNode
         private TreeNode BuildTreeNode(ProcNode proc)
         {
-            var node = new TreeNode(proc.Name) { Tag = proc.Id };
+            var node = new TreeNode(proc.Name) { Tag = proc };
             foreach (var child in proc.Children)
             {
                 node.Nodes.Add(BuildTreeNode(child));
@@ -69,44 +90,30 @@ namespace ProcHierarchyViewer
             _presenter.LoadHierarchy(roots);
         }
 
+
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            SearchNode();
+            string findWord = txtSearch.Text.Trim();
+            _presenter.SearchProcNode(currentRoots, findWord);
+
         }
 
-
-        private void SearchNode()
+        private TreeNode FindTreeNodeByProc(TreeNodeCollection nodes, ProcNode target)
         {
-            var term = txtSearch.Text.Trim();
-            if (string.IsNullOrEmpty(term))
-                return;
-
-            TreeNode found = null;
-            void Traverse(TreeNodeCollection nodes)
+            foreach (TreeNode node in nodes)
             {
-                foreach (TreeNode n in nodes)
-                {
-                    if (found != null)
-                        return;
-                    if (n.Text.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        found = n;
-                        return;
-                    }
-                    Traverse(n.Nodes);
-                }
+                // Tag içine ProcNode koyduğumuz için burası referans karşılaştırması
+                if (node.Tag == target)
+                    return node;
+
+                // Çocuklarda ara
+                var foundInChildren = FindTreeNodeByProc(node.Nodes, target);
+                if (foundInChildren != null)
+                    return foundInChildren;
             }
 
-            Traverse(treeView.Nodes);
-            if (found != null)
-            {
-                treeView.SelectedNode = found;
-                found.EnsureVisible();
-            }
-            else
-            {
-                MessageBox.Show($"\"{term}\" bulunamadı.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            return null;
         }
+
     }
 }

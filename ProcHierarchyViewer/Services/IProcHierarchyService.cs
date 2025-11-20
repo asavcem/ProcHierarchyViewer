@@ -13,5 +13,7 @@ namespace ProcHierarchyViewer.Services
         /// DataTable'dan ProcNode ağacı örüntüsü oluşturur.
         /// </summary>
         List<ProcNode> BuildTree(string rootProc);
+
+        ProcNode FindProcNode(IEnumerable<ProcNode> nodes, string term);
     }
 }
