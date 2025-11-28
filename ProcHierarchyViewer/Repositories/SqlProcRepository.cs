@@ -16,7 +16,7 @@ namespace ProcHierarchyViewer.Repositories
             _connectionString = connectionString;
         }
 
-        public DataTable GetHierarchyTable(string rootProc)
+        public DataTable GetHierarchyTable_DownStream(string rootProc)
         {
             var dt = new DataTable();
             using (var conn = new SqlConnection(_connectionString))
@@ -24,7 +24,7 @@ namespace ProcHierarchyViewer.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "dbo.kr_SP_HierarchyView";
+                    cmd.CommandText = "dbo.kr_SP_HierarchyView_DownStream";
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@RootProc", rootProc);
 
@@ -36,6 +36,28 @@ namespace ProcHierarchyViewer.Repositories
                 conn.Close();
             }
 
+            return dt;
+        }
+
+        public DataTable GetHierarchyTable_UpStream(string rootProc)
+        {
+            var dt = new DataTable();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "dbo.kr_SP_HierarchyView_UpStream";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@RootProc",rootProc);
+
+                    using (var adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+                conn.Close();
+            }
             return dt;
         }
     }

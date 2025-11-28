@@ -86,8 +86,15 @@ namespace ProcHierarchyViewer
                             .Select(l => l.Trim())
                             .Where(l => !string.IsNullOrEmpty(l));
 
-            // Presenter'ın LoadHierarchy metodunu doğrudan çağırıyoruz
-            _presenter.LoadHierarchy(roots);
+            //if (false)//Down or Up
+            //{
+                // Presenter'ın LoadHierarchy metodunu doğrudan çağırıyoruz
+                //_presenter.LoadHierarchy_DownStream(roots);
+            //}
+            //else
+            //{
+                _presenter.LoadHierarchy_UpStream(roots);
+            //}
         }
 
 

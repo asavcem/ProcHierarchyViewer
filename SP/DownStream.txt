@@ -1,0 +1,79 @@
+USE dbbanking
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+if exists(select * from sysobjects where uid = schema_id('dbo') and name = 'kr_SP_HierarchyView_DownStream')
+	drop Procedure dbo.kr_SP_HierarchyView_DownStream
+GO
+
+
+/*
+Olusturulma Tarihi	: 27/06/2025
+Programci       	: Cem Asav
+Aciklama         	: SP icerisindeki SP'lerin listelenmesi (DownStream)
+Websupport No   	: 
+
+sp_tool_helptext 'dbo.kr_SP_HierarchyView_DownStream',3,1
+exec dbo.kr_SP_HierarchyView_DownStream 'dbo.up_winbank_gns_krreeskont'
+
+
+*/
+
+CREATE PROCEDURE dbo.kr_SP_HierarchyView_DownStream
+(
+	@RootProc nvarchar(256)
+)
+as
+
+begin
+
+
+    with cte_dependents as (
+        select distinct referencing_id, referenced_schema_name, referenced_entity_name
+        from sys.sql_expression_dependencies (nolock)
+        where referenced_entity_name is not null
+          and referenced_database_name is null
+    ),
+    proctree as (
+        select 
+            p.object_id as ObjId,
+            cast(null as int) as ParentObjId,
+            schema_name(p.schema_id) + '.' + p.name as FullName,
+            convert(varchar(max), p.object_id) as Path,
+            0 as Level
+        from sys.procedures p (nolock)
+        where schema_name(p.schema_id) + '.' + p.name = @rootProc
+
+        union all
+
+        select 
+            p2.object_id,
+            ph.ObjId,
+            isnull(d.referenced_schema_name,'dbo') + '.' + d.referenced_entity_name,
+            ph.Path + ',' + convert(varchar(max), p2.object_id),
+            ph.Level + 1
+        from proctree ph
+        join cte_dependents d on d.referencing_id = ph.ObjId
+        join sys.procedures p2 (nolock) 
+            on schema_name(p2.schema_id) = isnull(d.referenced_schema_name,'dbo')
+           and p2.name = d.referenced_entity_name
+        where charindex(',' + convert(varchar(max), p2.object_id) + ',', ',' + ph.Path + ',') = 0
+    )
+    select 
+        pt.ObjId,
+        pt.ParentObjId,
+        replace(replace(pt.FullName, '[', ''), ']', '') as FullName,
+        pt.Level,
+        isnull(m.definition, '') as Definition
+    from proctree pt
+    left join sys.sql_modules m (nolock) 
+        on m.object_id = pt.ObjId
+    order by pt.Path;
+
+
+end
+
+GO
+GRANT EXECUTE ON dbo.kr_SP_HierarchyView_DownStream TO public
+GO
+

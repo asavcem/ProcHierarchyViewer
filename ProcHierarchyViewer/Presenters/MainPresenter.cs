@@ -24,7 +24,7 @@ namespace ProcHierarchyViewer.Presenters
         }
 
 
-        public void LoadHierarchy(IEnumerable<string> roots)
+        public void LoadHierarchy_DownStream(IEnumerable<string> roots)
         {
             // OnHierarchyBuilt ve OnNotFound, Presenter ile View arasındaki iletişim kanallarıdır.
             // "?.Invoke" kullanımı, event'e kayıtlı handler varsa çalıştırır, yoksa hiçbir işlem yapmaz.
@@ -35,10 +35,33 @@ namespace ProcHierarchyViewer.Presenters
             {
                 try
                 {
-                    var subtree = _service.BuildTree(root);
+                    var subtree = _service.BuildTree_DownStream(root);
                     result.AddRange(subtree);
                 }
                 catch
+                {
+                    notFound.Add(root);
+                }
+            }
+
+            OnHierarchyBuilt?.Invoke(result);
+            if (notFound.Count > 0 || result.Count < 1)
+                OnNotFound?.Invoke(notFound);
+        }
+
+        public void LoadHierarchy_UpStream(IEnumerable<string> roots)
+        {
+            var notFound = new List<string>();
+            var result = new List<ProcNode>();
+
+            foreach(var root in roots)
+            {
+                try
+                {
+                    var subtree = _service.BuildTree_UpStream(root);
+                    result.AddRange(subtree);
+                }
+                catch 
                 {
                     notFound.Add(root);
                 }

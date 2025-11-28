@@ -17,9 +17,9 @@ namespace ProcHierarchyViewer.Services
             _repo = repo;
         }
 
-        public List<ProcNode> BuildTree(string rootProc)
+        public List<ProcNode> BuildTree_DownStream(string rootProc)
         {
-            var table = _repo.GetHierarchyTable(rootProc);
+            var table = _repo.GetHierarchyTable_DownStream(rootProc);
 
 
             try
@@ -53,6 +53,58 @@ namespace ProcHierarchyViewer.Services
                     .Where(n => !table.Rows.Cast<DataRow>()
                         .Any(r2 => !r2.IsNull("ParentObjId") && (int)r2["ObjId"] == n.Id))
                     .ToList();
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+                throw;
+            }
+        }
+
+        public List<ProcNode> BuildTree_UpStream(string rootProc)
+        {
+            var table = _repo.GetHierarchyTable_UpStream(rootProc);
+
+            try
+            {
+              
+                // 1) ProcNode nesnelerini tekilleştirerek oluştur
+                var nodeDict = table.Rows.Cast<DataRow>()
+                    .GroupBy(r => (int)r["ObjId"])
+                    .ToDictionary(
+                        g => g.Key,
+                        g => new ProcNode
+                        {
+                            Id = g.Key,
+                            Name = g.First()["FullName"].ToString()
+                        }
+                    );
+
+                // 2) Parent–child ilişkisini kur
+                foreach (DataRow row in table.Rows)
+                {
+                    if (!row.IsNull("ParentObjId"))
+                    {
+                        int parentId = (int)row["ParentObjId"];
+                        int childId = (int)row["ObjId"];
+
+                        if (nodeDict.TryGetValue(parentId, out var parent) &&
+                            nodeDict.TryGetValue(childId, out var child))
+                        {
+                            if(!parent.Children.Any(c => c.Id == child.Id)) //Aynı değerin eklenmesi engellendi.
+                            parent.Children.Add(child);
+                        }
+                    }
+                }
+
+                // 3) Kök düğümleri ayıkla ve döndür
+                // Root = ParentObjId'si hiç olmayan ObjId'ler
+                var rootNodes = nodeDict.Values
+                    .Where(n => !table.Rows.Cast<DataRow>()
+                        .Any(r2 => !r2.IsNull("ParentObjId") && (int)r2["ObjId"] == n.Id))
+                    .ToList();
+
+                return rootNodes;
             }
             catch (Exception ex)
             {

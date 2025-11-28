@@ -10,8 +10,11 @@ namespace ProcHierarchyViewer.Presenters
 {
     public interface IMainPresenter
     {
-        /// <summary>View'den kullanıcı girdilerini alır.</summary>
-        void LoadHierarchy(IEnumerable<string> roots);
+        /// <summary>View'den kullanıcı girdilerini alır. (DownStream)</summary>
+        void LoadHierarchy_DownStream(IEnumerable<string> roots);
+
+        /// <summary>View'den kullanıcı girdilerini alır. (UpStream)</summary>
+        void LoadHierarchy_UpStream(IEnumerable<string> roots);
 
         /// <summary>TreeView için oluşturulan ProcNode listesini döner.</summary>
         event Action<List<ProcNode>> OnHierarchyBuilt;

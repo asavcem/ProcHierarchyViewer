@@ -10,8 +10,13 @@ namespace ProcHierarchyViewer.Repositories
     public interface IProcRepository
     {
         /// <summary>
-        /// DB'den DataTable formatında prosedür hiyerarşi verisini getirir.
+        /// DB'den DataTable formatında prosedür hiyerarşi verisini getirir. (DownStream)
         /// </summary>
-        DataTable GetHierarchyTable(string rootProc);
+        DataTable GetHierarchyTable_DownStream(string rootProc);
+
+        /// <summary>
+        /// DB'den DataTable formatında prosedür hiyerarşi verisini getirir. (UpStream)
+        /// </summary>
+        DataTable GetHierarchyTable_UpStream(string rootProc);
     }
 }

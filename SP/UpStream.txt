@@ -1,0 +1,141 @@
+USE dbbanking
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+if exists(select * from sysobjects where uid = schema_id('dbo') and name = 'kr_SP_HierarchyView_UpStream')
+	drop Procedure dbo.kr_SP_HierarchyView_UpStream
+GO
+
+/*
+
+Olusturulma Tarihi	: 27/11/2025
+Programci       	: Cem Asav
+Aciklama         	: SP icerisindeki SP'lerin listelenmesi (UpStream)
+Websupport No   	: 
+
+sp_tool_helptext 'dbo.kr_SP_HierarchyView_UpStream',3,1
+exec dbo.kr_SP_HierarchyView_UpStream 'sel_bakiyebilgi'
+
+*/
+
+CREATE PROCEDURE dbo.kr_SP_HierarchyView_UpStream
+(
+	@RootProc nvarchar(256) 
+)
+as
+begin
+
+    DECLARE @RootSchema sysname
+    DECLARE @RootName   sysname
+
+    IF CHARINDEX('.', @RootProc) > 0
+    BEGIN
+        SET @RootSchema = PARSENAME(@RootProc, 2)
+        SET @RootName   = PARSENAME(@RootProc, 1)
+    END
+    ELSE
+    BEGIN
+        SET @RootSchema = 'dbo'
+        SET @RootName   = @RootProc
+    END
+
+    -------------------------------------------------------------------
+    -- 1) Tüm SP referanslarını temp table'a al (CTE yerine)
+    -------------------------------------------------------------------
+    IF OBJECT_ID('tempdb..#refs') IS NOT NULL DROP TABLE #refs
+
+    SELECT DISTINCT
+        d.referencing_id,
+        d.referenced_schema_name,
+        d.referenced_entity_name
+    INTO #refs
+    FROM sys.sql_expression_dependencies d WITH (NOLOCK)
+    WHERE d.referenced_entity_name IS NOT NULL
+      AND d.referenced_database_name IS NULL
+
+    -------------------------------------------------------------------
+    -- 2) Proctree tablosu: Upstream hiyerarşiyi oluşturacağız
+    -------------------------------------------------------------------
+    IF OBJECT_ID('tempdb..#proctree') IS NOT NULL DROP TABLE #proctree
+
+    CREATE TABLE #proctree
+    (
+        ObjId INT,
+        ParentObjId INT NULL,
+        FullName NVARCHAR(300),
+        Level INT,
+        Path NVARCHAR(MAX)
+    )
+
+    -------------------------------------------------------------------
+    -- 3) Root satırını ekle
+    -------------------------------------------------------------------
+    INSERT INTO #proctree (ObjId, ParentObjId, FullName, Level, Path)
+    SELECT 
+        p.object_id,
+        NULL,
+        SCHEMA_NAME(p.schema_id) + '.' + p.name,
+        0,
+        CONVERT(NVARCHAR(MAX), p.object_id)
+    FROM sys.procedures p WITH (NOLOCK)
+    WHERE SCHEMA_NAME(p.schema_id) = @RootSchema
+      AND p.name = @RootName
+
+    -------------------------------------------------------------------
+    -- 4) Upstream’i seviye seviye doldur (recursive CTE yerine döngü)
+    -------------------------------------------------------------------
+    DECLARE @CurrentLevel INT
+    SET @CurrentLevel = 0
+
+    WHILE 1 = 1
+    BEGIN
+        -- o seviyedeki kayıtlar
+        IF NOT EXISTS (SELECT 1 FROM #proctree WHERE Level = @CurrentLevel)
+            BREAK
+
+        INSERT INTO #proctree (ObjId, ParentObjId, FullName, Level, Path)
+        SELECT DISTINCT
+            caller.object_id AS ObjId,
+            pt.ObjId AS ParentObjId,
+            SCHEMA_NAME(caller.schema_id) + '.' + caller.name AS FullName,
+            @CurrentLevel + 1 AS Level,
+            pt.Path + ',' + CONVERT(NVARCHAR(MAX), caller.object_id) AS Path
+        FROM #proctree pt
+        JOIN sys.procedures callee WITH (NOLOCK)
+             ON callee.object_id = pt.ObjId
+        JOIN #refs r
+             ON ISNULL(r.referenced_schema_name, 'dbo') = SCHEMA_NAME(callee.schema_id)
+            AND r.referenced_entity_name = callee.name
+        JOIN sys.procedures caller WITH (NOLOCK)
+             ON caller.object_id = r.referencing_id
+        WHERE pt.Level = @CurrentLevel
+          AND (
+                SELECT COUNT(*) 
+                FROM #proctree z 
+                WHERE z.ObjId = caller.object_id
+              ) = 0  -- cycle önleme
+
+        SET @CurrentLevel = @CurrentLevel + 1
+        IF @CurrentLevel > 50 BREAK
+    END
+
+    -------------------------------------------------------------------
+    -- 5) Sonuç
+    -------------------------------------------------------------------
+    SELECT 
+        t.ObjId,
+        t.ParentObjId,
+        t.FullName,
+        t.Level,
+        ISNULL(m.definition, '') AS Definition
+    FROM #proctree t
+    LEFT JOIN sys.sql_modules m WITH (NOLOCK)
+        ON m.object_id = t.ObjId
+    ORDER BY t.Level, t.FullName
+
+end
+
+GO
+GRANT EXECUTE ON dbo.kr_SP_HierarchyView_UpStream TO public
+GO
+

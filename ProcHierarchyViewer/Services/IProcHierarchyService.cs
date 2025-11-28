@@ -10,10 +10,18 @@ namespace ProcHierarchyViewer.Services
     public interface IProcHierarchyService
     {
         /// <summary>
-        /// DataTable'dan ProcNode ağacı örüntüsü oluşturur.
+        /// DataTable'dan ProcNode ağacı örüntüsü oluşturur. (DownStream)
         /// </summary>
-        List<ProcNode> BuildTree(string rootProc);
+        List<ProcNode> BuildTree_DownStream(string rootProc);
 
+        /// <summary>
+        /// DataTable'dan ProcNode ağacı örüntüsü oluşturur. (UpStream)
+        /// </summary>
+        List<ProcNode> BuildTree_UpStream(string rootProc);
+
+        /// <summary>
+        /// Listenen SP'ler arasında arama yapma işlemi
+        /// </summary>
         ProcNode FindProcNode(IEnumerable<ProcNode> nodes, string term);
     }
 }
