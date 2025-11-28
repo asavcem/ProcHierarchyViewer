@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ProcHierarchyViewer
 {
@@ -19,6 +20,7 @@ namespace ProcHierarchyViewer
         private readonly IMainPresenter _presenter;
         private SplitContainer splitContainer;
         private List<ProcNode> currentRoots = new List<ProcNode>();
+        private TreeNode _rightClickedNode;
 
         public MainForm(IMainPresenter presenter)
         {
@@ -31,6 +33,8 @@ namespace ProcHierarchyViewer
             _presenter.OnFindProcNode += SelectedProcNode;
             _presenter.OnNotProcNode += DisplayNotFoundWord;
 
+            treeView.NodeMouseClick += treeView_MouseClick;
+            ctxTree.Click += menuCopyName_Click;
         }
 
         public void DisplayTree(IEnumerable<ProcNode> roots)
@@ -122,5 +126,24 @@ namespace ProcHierarchyViewer
             return null;
         }
 
+        private void treeView_MouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if(e.Button == MouseButtons.Right)
+            {
+                treeView.SelectedNode = e.Node;
+                _rightClickedNode = e.Node;
+                
+            }
+        }
+
+        private void menuCopyName_Click(object sender, EventArgs e)
+        {
+            var node = _rightClickedNode ?? treeView.SelectedNode;
+
+            if (node != null && !string.IsNullOrWhiteSpace(node.Text))
+            {
+                Clipboard.SetText(node.Text);
+            }
+        }
     }
 }

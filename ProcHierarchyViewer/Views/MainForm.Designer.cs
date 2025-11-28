@@ -41,86 +41,155 @@ namespace ProcHierarchyViewer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.treeView = new System.Windows.Forms.TreeView();
+            this.panelTop = new System.Windows.Forms.Panel();
+            this.lblRoot = new System.Windows.Forms.Label();
+            this.txtRootProc = new System.Windows.Forms.TextBox();
+            this.btnLoad = new System.Windows.Forms.Button();
+            this.lblSearch = new System.Windows.Forms.Label();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.ctxTree = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ismiKopyalaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+            this.splitContainer.Panel1.SuspendLayout();
+            this.splitContainer.SuspendLayout();
+            this.panelTop.SuspendLayout();
+            this.ctxTree.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // splitContainer
+            // 
+            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer.Location = new System.Drawing.Point(0, 80);
+            this.splitContainer.Name = "splitContainer";
+            // 
+            // splitContainer.Panel1
+            // 
+            this.splitContainer.Panel1.Controls.Add(this.treeView);
+            this.splitContainer.Panel2Collapsed = true;
+            this.splitContainer.Size = new System.Drawing.Size(884, 481);
+            this.splitContainer.SplitterDistance = 121;
+            this.splitContainer.TabIndex = 0;
+            // 
+            // treeView
+            // 
+            this.treeView.ContextMenuStrip = this.ctxTree;
+            this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView.FullRowSelect = true;
+            this.treeView.HideSelection = false;
+            this.treeView.Location = new System.Drawing.Point(0, 0);
+            this.treeView.Name = "treeView";
+            this.treeView.Size = new System.Drawing.Size(884, 481);
+            this.treeView.TabIndex = 0;
+            this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_MouseClick);
+            // 
+            // panelTop
+            // 
+            this.panelTop.Controls.Add(this.lblRoot);
+            this.panelTop.Controls.Add(this.txtRootProc);
+            this.panelTop.Controls.Add(this.btnLoad);
+            this.panelTop.Controls.Add(this.lblSearch);
+            this.panelTop.Controls.Add(this.txtSearch);
+            this.panelTop.Controls.Add(this.btnSearch);
+            this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTop.Location = new System.Drawing.Point(0, 0);
+            this.panelTop.Name = "panelTop";
+            this.panelTop.Size = new System.Drawing.Size(884, 80);
+            this.panelTop.TabIndex = 1;
+            // 
+            // lblRoot
+            // 
+            this.lblRoot.AutoSize = true;
+            this.lblRoot.Location = new System.Drawing.Point(5, 15);
+            this.lblRoot.Name = "lblRoot";
+            this.lblRoot.Size = new System.Drawing.Size(50, 13);
+            this.lblRoot.TabIndex = 0;
+            this.lblRoot.Text = "Root SP:";
+            // 
+            // txtRootProc
+            // 
+            this.txtRootProc.Location = new System.Drawing.Point(70, 12);
+            this.txtRootProc.Multiline = true;
+            this.txtRootProc.Name = "txtRootProc";
+            this.txtRootProc.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtRootProc.Size = new System.Drawing.Size(350, 60);
+            this.txtRootProc.TabIndex = 1;
+            this.txtRootProc.Text = "dbo.up_winbank_gns_krreeskont";
+            // 
+            // btnLoad
+            // 
+            this.btnLoad.Location = new System.Drawing.Point(420, 11);
+            this.btnLoad.Name = "btnLoad";
+            this.btnLoad.Size = new System.Drawing.Size(60, 23);
+            this.btnLoad.TabIndex = 2;
+            this.btnLoad.Text = "Load";
+            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
+            // 
+            // lblSearch
+            // 
+            this.lblSearch.AutoSize = true;
+            this.lblSearch.Location = new System.Drawing.Point(480, 15);
+            this.lblSearch.Name = "lblSearch";
+            this.lblSearch.Size = new System.Drawing.Size(44, 13);
+            this.lblSearch.TabIndex = 3;
+            this.lblSearch.Text = "Search:";
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Location = new System.Drawing.Point(524, 12);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(200, 20);
+            this.txtSearch.TabIndex = 4;
+            this.txtSearch.Text = "dbo.sel_yilsonutarihleri";
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.Location = new System.Drawing.Point(724, 11);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(60, 23);
+            this.btnSearch.TabIndex = 5;
+            this.btnSearch.Text = "Find";
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // ctxTree
+            // 
+            this.ctxTree.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ismiKopyalaToolStripMenuItem});
+            this.ctxTree.Name = "ctxTree";
+            this.ctxTree.Size = new System.Drawing.Size(142, 26);
+            // 
+            // ismiKopyalaToolStripMenuItem
+            // 
+            this.ismiKopyalaToolStripMenuItem.Name = "ismiKopyalaToolStripMenuItem";
+            this.ismiKopyalaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ismiKopyalaToolStripMenuItem.Text = "İsmi Kopyala";
+            // 
+            // MainForm
+            // 
+            this.ClientSize = new System.Drawing.Size(884, 561);
+            this.Controls.Add(this.splitContainer);
+            this.Controls.Add(this.panelTop);
+            this.Name = "MainForm";
             this.Text = "Stored Procedure Hierarchy Viewer";
-            this.Width = 900;
-            this.Height = 600;
-
-            // SplitContainer for Tree
-            splitContainer = new SplitContainer();
-            splitContainer.Dock = DockStyle.Fill;
-            splitContainer.Orientation = Orientation.Vertical;
-            splitContainer.SplitterDistance = 300;
-            splitContainer.Panel2Collapsed = true; // hide right panel
-            this.Controls.Add(splitContainer);
-
-            // Top panel for inputs
-            panelTop = new Panel();
-            panelTop.Dock = DockStyle.Top;
-            panelTop.Height = 80;
-            this.Controls.Add(panelTop);
-
-            Label lblRoot = new Label();
-            lblRoot.Text = "Root SP:";
-            lblRoot.Left = 5;
-            lblRoot.Top = 15;
-            lblRoot.AutoSize = true;
-            panelTop.Controls.Add(lblRoot);
-
-            txtRootProc = new TextBox();
-            txtRootProc.Left = 70;
-            txtRootProc.Top = 12;
-            txtRootProc.Width = 350;
-            txtRootProc.Height = 60;
-            txtRootProc.Multiline = true;
-            txtRootProc.ScrollBars = ScrollBars.Vertical;
-            txtRootProc.Text = "dbo.up_winbank_gns_krreeskont";
-            panelTop.Controls.Add(txtRootProc);
-
-            btnLoad = new Button();
-            btnLoad.Text = "Load";
-            btnLoad.Left = txtRootProc.Right + 10;
-            btnLoad.Top = 11;
-            btnLoad.Width = 60;
-            btnLoad.Click += new EventHandler(btnLoad_Click);
-            panelTop.Controls.Add(btnLoad);
-
-            Label lblSearch = new Label();
-            lblSearch.Text = "Search:";
-            lblSearch.Left = btnLoad.Right + 20;
-            lblSearch.Top = 15;
-            lblSearch.AutoSize = true;
-            panelTop.Controls.Add(lblSearch);
-
-            txtSearch = new TextBox();
-            txtSearch.Left = lblSearch.Right + 5;
-            txtSearch.Text = "dbo.sel_yilsonutarihleri";
-            txtSearch.Top = 12;
-            txtSearch.Width = 200;
-            panelTop.Controls.Add(txtSearch);
-
-            btnSearch = new Button();
-            btnSearch.Text = "Find";
-            btnSearch.Left = txtSearch.Right + 10;
-            btnSearch.Top = 11;
-            btnSearch.Width = 60;
-            btnSearch.Click += new EventHandler(btnSearch_Click);
-            panelTop.Controls.Add(btnSearch);
-
-            // TreeView in left panel
-            treeView = new TreeView();
-            treeView.Dock = DockStyle.Fill;
-            treeView.HideSelection = false;
-            treeView.FullRowSelect = true;
-            treeView.ContextMenuStrip = new ContextMenuStrip();
-            //treeView.ContextMenuStrip.Items.Add("Copy", null, new EventHandler(copyMenu_Click));
-            //treeView.KeyDown += new KeyEventHandler(treeView_KeyDown);
-            splitContainer.Panel1.Controls.Add(treeView);
-
-            //this.Load += new EventHandler(MainForm_Load);
+            this.splitContainer.Panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+            this.splitContainer.ResumeLayout(false);
+            this.panelTop.ResumeLayout(false);
+            this.panelTop.PerformLayout();
+            this.ctxTree.ResumeLayout(false);
+            this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private Label lblRoot;
+        private Label lblSearch;
+        private ContextMenuStrip ctxTree;
+        private ToolStripMenuItem ismiKopyalaToolStripMenuItem;
     }
 }
 
