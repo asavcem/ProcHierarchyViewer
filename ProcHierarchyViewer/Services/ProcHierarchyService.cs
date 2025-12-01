@@ -36,15 +36,22 @@ namespace ProcHierarchyViewer.Services
                         }
                     );
 
-                // 2) Parent–child ilişkisini kur
+                // 2) Parent–child ilişkisini kur (aynı ilişkiyi ikinci kez ekleme)
                 foreach (DataRow row in table.Rows)
                 {
-                    if (!row.IsNull("ParentObjId"))
+                    if (row.IsNull("ParentObjId"))
+                        continue;
+
+                    int parentId = (int)row["ParentObjId"];
+                    int childId = (int)row["ObjId"];
+
+                    var parentNode = nodeDict[parentId];
+                    var childNode = nodeDict[childId];
+
+                    // Bu parent altında aynı child zaten var mı kontrol et
+                    if (!parentNode.Children.Any(c => c.Id == childId))
                     {
-                        int parentId = (int)row["ParentObjId"];
-                        int childId = (int)row["ObjId"];
-                        // parent ve child mutlaka nodeDict içinde var
-                        nodeDict[parentId].Children.Add(nodeDict[childId]);
+                        parentNode.Children.Add(childNode);
                     }
                 }
 

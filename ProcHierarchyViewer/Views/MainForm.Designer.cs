@@ -44,33 +44,35 @@ namespace ProcHierarchyViewer
             this.components = new System.ComponentModel.Container();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.treeView = new System.Windows.Forms.TreeView();
+            this.ctxTree = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ismiKopyalaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.comboBox_Direction = new System.Windows.Forms.ComboBox();
+            this.label_Direction = new System.Windows.Forms.Label();
             this.lblRoot = new System.Windows.Forms.Label();
             this.txtRootProc = new System.Windows.Forms.TextBox();
             this.btnLoad = new System.Windows.Forms.Button();
             this.lblSearch = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.ctxTree = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ismiKopyalaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.SuspendLayout();
-            this.panelTop.SuspendLayout();
             this.ctxTree.SuspendLayout();
+            this.panelTop.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer.Location = new System.Drawing.Point(0, 80);
+            this.splitContainer.Location = new System.Drawing.Point(0, 86);
             this.splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
             // 
             this.splitContainer.Panel1.Controls.Add(this.treeView);
             this.splitContainer.Panel2Collapsed = true;
-            this.splitContainer.Size = new System.Drawing.Size(884, 481);
+            this.splitContainer.Size = new System.Drawing.Size(862, 475);
             this.splitContainer.SplitterDistance = 121;
             this.splitContainer.TabIndex = 0;
             // 
@@ -82,12 +84,27 @@ namespace ProcHierarchyViewer
             this.treeView.HideSelection = false;
             this.treeView.Location = new System.Drawing.Point(0, 0);
             this.treeView.Name = "treeView";
-            this.treeView.Size = new System.Drawing.Size(884, 481);
+            this.treeView.Size = new System.Drawing.Size(862, 475);
             this.treeView.TabIndex = 0;
             this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_MouseClick);
             // 
+            // ctxTree
+            // 
+            this.ctxTree.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ismiKopyalaToolStripMenuItem});
+            this.ctxTree.Name = "ctxTree";
+            this.ctxTree.Size = new System.Drawing.Size(142, 26);
+            // 
+            // ismiKopyalaToolStripMenuItem
+            // 
+            this.ismiKopyalaToolStripMenuItem.Name = "ismiKopyalaToolStripMenuItem";
+            this.ismiKopyalaToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.ismiKopyalaToolStripMenuItem.Text = "İsmi Kopyala";
+            // 
             // panelTop
             // 
+            this.panelTop.Controls.Add(this.comboBox_Direction);
+            this.panelTop.Controls.Add(this.label_Direction);
             this.panelTop.Controls.Add(this.lblRoot);
             this.panelTop.Controls.Add(this.txtRootProc);
             this.panelTop.Controls.Add(this.btnLoad);
@@ -97,8 +114,25 @@ namespace ProcHierarchyViewer
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(884, 80);
+            this.panelTop.Size = new System.Drawing.Size(862, 86);
             this.panelTop.TabIndex = 1;
+            // 
+            // comboBox_Direction
+            // 
+            this.comboBox_Direction.FormattingEnabled = true;
+            this.comboBox_Direction.Location = new System.Drawing.Point(568, 38);
+            this.comboBox_Direction.Name = "comboBox_Direction";
+            this.comboBox_Direction.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_Direction.TabIndex = 7;
+            // 
+            // label_Direction
+            // 
+            this.label_Direction.AutoSize = true;
+            this.label_Direction.Location = new System.Drawing.Point(510, 41);
+            this.label_Direction.Name = "label_Direction";
+            this.label_Direction.Size = new System.Drawing.Size(52, 13);
+            this.label_Direction.TabIndex = 6;
+            this.label_Direction.Text = "Direction:";
             // 
             // lblRoot
             // 
@@ -111,7 +145,7 @@ namespace ProcHierarchyViewer
             // 
             // txtRootProc
             // 
-            this.txtRootProc.Location = new System.Drawing.Point(70, 12);
+            this.txtRootProc.Location = new System.Drawing.Point(61, 12);
             this.txtRootProc.Multiline = true;
             this.txtRootProc.Name = "txtRootProc";
             this.txtRootProc.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -121,7 +155,7 @@ namespace ProcHierarchyViewer
             // 
             // btnLoad
             // 
-            this.btnLoad.Location = new System.Drawing.Point(420, 11);
+            this.btnLoad.Location = new System.Drawing.Point(417, 10);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(60, 23);
             this.btnLoad.TabIndex = 2;
@@ -131,7 +165,7 @@ namespace ProcHierarchyViewer
             // lblSearch
             // 
             this.lblSearch.AutoSize = true;
-            this.lblSearch.Location = new System.Drawing.Point(480, 15);
+            this.lblSearch.Location = new System.Drawing.Point(518, 15);
             this.lblSearch.Name = "lblSearch";
             this.lblSearch.Size = new System.Drawing.Size(44, 13);
             this.lblSearch.TabIndex = 3;
@@ -139,7 +173,7 @@ namespace ProcHierarchyViewer
             // 
             // txtSearch
             // 
-            this.txtSearch.Location = new System.Drawing.Point(524, 12);
+            this.txtSearch.Location = new System.Drawing.Point(568, 12);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(200, 20);
             this.txtSearch.TabIndex = 4;
@@ -147,39 +181,27 @@ namespace ProcHierarchyViewer
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(724, 11);
+            this.btnSearch.Location = new System.Drawing.Point(774, 10);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(60, 23);
             this.btnSearch.TabIndex = 5;
             this.btnSearch.Text = "Find";
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
-            // ctxTree
-            // 
-            this.ctxTree.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ismiKopyalaToolStripMenuItem});
-            this.ctxTree.Name = "ctxTree";
-            this.ctxTree.Size = new System.Drawing.Size(142, 26);
-            // 
-            // ismiKopyalaToolStripMenuItem
-            // 
-            this.ismiKopyalaToolStripMenuItem.Name = "ismiKopyalaToolStripMenuItem";
-            this.ismiKopyalaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.ismiKopyalaToolStripMenuItem.Text = "İsmi Kopyala";
-            // 
             // MainForm
             // 
-            this.ClientSize = new System.Drawing.Size(884, 561);
+            this.ClientSize = new System.Drawing.Size(862, 561);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.panelTop);
             this.Name = "MainForm";
             this.Text = "Stored Procedure Hierarchy Viewer";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.splitContainer.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
+            this.ctxTree.ResumeLayout(false);
             this.panelTop.ResumeLayout(false);
             this.panelTop.PerformLayout();
-            this.ctxTree.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -190,6 +212,8 @@ namespace ProcHierarchyViewer
         private Label lblSearch;
         private ContextMenuStrip ctxTree;
         private ToolStripMenuItem ismiKopyalaToolStripMenuItem;
+        private ComboBox comboBox_Direction;
+        private Label label_Direction;
     }
 }
 

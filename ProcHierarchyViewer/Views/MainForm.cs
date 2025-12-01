@@ -1,4 +1,5 @@
 ﻿using ProcHierarchyViewer.Models;
+using ProcHierarchyViewer.Models.Enums;
 using ProcHierarchyViewer.Presenters;
 using ProcHierarchyViewer.Views;
 using System;
@@ -90,15 +91,14 @@ namespace ProcHierarchyViewer
                             .Select(l => l.Trim())
                             .Where(l => !string.IsNullOrEmpty(l));
 
-            //if (false)//Down or Up
-            //{
-                // Presenter'ın LoadHierarchy metodunu doğrudan çağırıyoruz
-                //_presenter.LoadHierarchy_DownStream(roots);
-            //}
-            //else
-            //{
+            if ((DirectionType_Stream)comboBox_Direction.SelectedValue == DirectionType_Stream.DownStream)
+            {
+                _presenter.LoadHierarchy_DownStream(roots);
+            }
+            else //Up Stream
+            {
                 _presenter.LoadHierarchy_UpStream(roots);
-            //}
+            }
         }
 
 
@@ -132,7 +132,7 @@ namespace ProcHierarchyViewer
             {
                 treeView.SelectedNode = e.Node;
                 _rightClickedNode = e.Node;
-                
+
             }
         }
 
@@ -144,6 +144,25 @@ namespace ProcHierarchyViewer
             {
                 Clipboard.SetText(node.Text);
             }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            Fill_comboBox_Direction();
+        }
+
+        private void Fill_comboBox_Direction()
+        {
+            var items = new[]
+            {
+                new { Text = "Down Stream", Value = DirectionType_Stream.DownStream},
+                new { Text = "Up Stream", Value = DirectionType_Stream.UpStream}
+
+            };
+
+            comboBox_Direction.DisplayMember = "Text";
+            comboBox_Direction.ValueMember = "Value";
+            comboBox_Direction.DataSource = items;
         }
     }
 }
