@@ -1,10 +1,8 @@
-ï»¿using ProcHierarchyViewer.Models;
+using ProcHierarchyViewer.Models;
+using ProcHierarchyViewer.Models.Enums;
 using ProcHierarchyViewer.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProcHierarchyViewer.Presenters
 {
@@ -17,17 +15,17 @@ namespace ProcHierarchyViewer.Presenters
 
         public event Action<ProcNode> OnFindProcNode;
         public event Action<string> OnNotProcNode;
+        public event Action<string, DirectionType_Stream> OnModeHeaderChanged;
 
         public MainPresenter(IProcHierarchyService service)
         {
             _service = service;
         }
 
-
         public void LoadHierarchy_DownStream(IEnumerable<string> roots)
         {
-            // OnHierarchyBuilt ve OnNotFound, Presenter ile View arasÄ±ndaki iletiÅŸim kanallarÄ±dÄ±r.
-            // "?.Invoke" kullanÄ±mÄ±, event'e kayÄ±tlÄ± handler varsa Ã§alÄ±ÅŸtÄ±rÄ±r, yoksa hiÃ§bir iÅŸlem yapmaz.
+            // OnHierarchyBuilt ve OnNotFound, Presenter ile View arasýndaki iletiþim kanallarýdýr.
+            // "?.Invoke" kullanýmý, event'e kayýtlý handler varsa çalýþtýrýr, yoksa hiçbir iþlem yapmaz.
             var notFound = new List<string>();
             var result = new List<ProcNode>();
 
@@ -46,7 +44,9 @@ namespace ProcHierarchyViewer.Presenters
 
             OnHierarchyBuilt?.Invoke(result);
             if (notFound.Count > 0 || result.Count < 1)
+            {
                 OnNotFound?.Invoke(notFound);
+            }
         }
 
         public void LoadHierarchy_UpStream(IEnumerable<string> roots)
@@ -54,14 +54,14 @@ namespace ProcHierarchyViewer.Presenters
             var notFound = new List<string>();
             var result = new List<ProcNode>();
 
-            foreach(var root in roots)
+            foreach (var root in roots)
             {
                 try
                 {
                     var subtree = _service.BuildTree_UpStream(root);
                     result.AddRange(subtree);
                 }
-                catch 
+                catch
                 {
                     notFound.Add(root);
                 }
@@ -69,14 +69,16 @@ namespace ProcHierarchyViewer.Presenters
 
             OnHierarchyBuilt?.Invoke(result);
             if (notFound.Count > 0 || result.Count < 1)
+            {
                 OnNotFound?.Invoke(notFound);
+            }
         }
 
         public void SearchProcNode(IEnumerable<ProcNode> procNode, string term)
         {
             var result = _service.FindProcNode(procNode, term);
-            
-            if(result != null)
+
+            if (result != null)
             {
                 OnFindProcNode?.Invoke(result);
             }
@@ -84,6 +86,15 @@ namespace ProcHierarchyViewer.Presenters
             {
                 OnNotProcNode?.Invoke(term);
             }
+        }
+
+        public void ChangeDirection(DirectionType_Stream direction)
+        {
+            var headerText = direction == DirectionType_Stream.DownStream
+                ? "[ \u2193 DOWNSTREAM MODE ]"
+                : "[ \u2191 UPSTREAM MODE ]";
+
+            OnModeHeaderChanged?.Invoke(headerText, direction);
         }
     }
 }

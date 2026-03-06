@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Windows.Forms;
 using ProcHierarchyViewer.Repositories;
 using ProcHierarchyViewer.Services;
@@ -19,20 +19,29 @@ namespace ProcHierarchyViewer
         [STAThread]
         static void Main()
         {
-            string connStr = ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Manuel baÄŸÄ±mlÄ±lÄ±k oluÅŸturma
+            var mainDbConnection = ConfigurationManager.ConnectionStrings["MainDb"];
+            if (mainDbConnection == null || string.IsNullOrWhiteSpace(mainDbConnection.ConnectionString))
+            {
+                MessageBox.Show(
+                    "App.config içinde 'MainDb' connection string tanýmlý deðil veya boþ.",
+                    "Yapýlandýrma Hatasý",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
 
+            string connStr = mainDbConnection.ConnectionString;
+
+            // Manuel baðýmlýlýk oluþturma
             var repository = new SqlProcRepository(connStr);
             var service = new ProcHierarchyService(repository);
             var presenter = new MainPresenter(service);
             var mainForm = new MainForm(presenter);
 
             Application.Run(mainForm);
-
         }
     }
 }
