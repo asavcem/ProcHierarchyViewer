@@ -5,8 +5,6 @@
     </startup>
 
 	<connectionStrings>
-  <add name="DefaultConnection"
-       connectionString="Server=YOUR_SERVER;Database=YOUR_DB;User Id=YOUR_USER;Password=YOUR_PASSWORD;"
-       providerName="System.Data.SqlClient" />
-</connectionStrings>
+		<add name="MainDb" connectionString="(value)" providerName="System.Data.SqlClient"/>
+	</connectionStrings>
 </configuration>
