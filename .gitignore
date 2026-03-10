@@ -133,3 +133,7 @@ ProcHierarchyViewer/Debug/
 ProcHierarchyViewer/Release/
 ProcHierarchyViewer/ProcHierarchyViewer.csproj.user
 
+# Appconfig
+App.config
+ProcHierarchyViewer/App.config
+
