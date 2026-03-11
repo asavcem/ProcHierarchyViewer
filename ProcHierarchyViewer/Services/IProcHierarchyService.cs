@@ -23,5 +23,10 @@ namespace ProcHierarchyViewer.Services
         /// Listenen SP'ler arasında arama yapma işlemi
         /// </summary>
         ProcNode FindProcNode(IEnumerable<ProcNode> nodes, string term);
+
+        /// <summary>
+        /// Veritabanındaki tüm stored procedure isimlerini getirir.
+        /// </summary>
+        IReadOnlyList<string> GetStoredProcedureNames();
     }
 }

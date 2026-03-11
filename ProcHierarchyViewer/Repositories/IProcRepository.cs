@@ -18,5 +18,10 @@ namespace ProcHierarchyViewer.Repositories
         /// DB'den DataTable formatında prosedür hiyerarşi verisini getirir. (UpStream)
         /// </summary>
         DataTable GetHierarchyTable_UpStream(string rootProc);
+
+        /// <summary>
+        /// Veritabanındaki tüm stored procedure isimlerini getirir.
+        /// </summary>
+        IEnumerable<string> GetStoredProcedureNames();
     }
 }

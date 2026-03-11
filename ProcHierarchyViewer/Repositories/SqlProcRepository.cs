@@ -60,5 +60,35 @@ namespace ProcHierarchyViewer.Repositories
             }
             return dt;
         }
+
+        public IEnumerable<string> GetStoredProcedureNames()
+        {
+            var storedProcedures = new List<string>();
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT s.name + '.' + p.name AS FullName
+                        FROM sys.procedures p
+                        INNER JOIN sys.schemas s ON s.schema_id = p.schema_id
+                        WHERE p.is_ms_shipped = 0
+                        ORDER BY s.name, p.name";
+                    cmd.CommandType = CommandType.Text;
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            storedProcedures.Add(reader.GetString(0));
+                        }
+                    }
+                }
+            }
+
+            return storedProcedures;
+        }
     }
 }

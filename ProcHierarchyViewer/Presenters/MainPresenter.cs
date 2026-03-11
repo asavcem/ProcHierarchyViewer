@@ -1,4 +1,4 @@
-using ProcHierarchyViewer.Models;
+ï»¿using ProcHierarchyViewer.Models;
 using ProcHierarchyViewer.Models.Enums;
 using ProcHierarchyViewer.Services;
 using System;
@@ -16,6 +16,8 @@ namespace ProcHierarchyViewer.Presenters
         public event Action<ProcNode> OnFindProcNode;
         public event Action<string> OnNotProcNode;
         public event Action<string, DirectionType_Stream> OnModeHeaderChanged;
+        public event Action<IEnumerable<string>> OnStoredProceduresLoaded;
+        public event Action<string> OnStoredProceduresLoadFailed;
 
         public MainPresenter(IProcHierarchyService service)
         {
@@ -24,8 +26,8 @@ namespace ProcHierarchyViewer.Presenters
 
         public void LoadHierarchy_DownStream(IEnumerable<string> roots)
         {
-            // OnHierarchyBuilt ve OnNotFound, Presenter ile View arasýndaki iletiþim kanallarýdýr.
-            // "?.Invoke" kullanýmý, event'e kayýtlý handler varsa çalýþtýrýr, yoksa hiçbir iþlem yapmaz.
+            // OnHierarchyBuilt ve OnNotFound, Presenter ile View arasÄ±ndaki iletiÅŸim kanallarÄ±dÄ±r.
+            // "?.Invoke" kullanÄ±mÄ±, event'e kayÄ±tlÄ± handler varsa Ã§alÄ±ÅŸtÄ±rÄ±r, yoksa hiÃ§bir iÅŸlem yapmaz.
             var notFound = new List<string>();
             var result = new List<ProcNode>();
 
@@ -95,6 +97,19 @@ namespace ProcHierarchyViewer.Presenters
                 : "[ \u2191 UPSTREAM MODE ]";
 
             OnModeHeaderChanged?.Invoke(headerText, direction);
+        }
+
+        public void LoadStoredProcedures()
+        {
+            try
+            {
+                var storedProcedures = _service.GetStoredProcedureNames();
+                OnStoredProceduresLoaded?.Invoke(storedProcedures);
+            }
+            catch (Exception ex)
+            {
+                OnStoredProceduresLoadFailed?.Invoke(ex.Message);
+            }
         }
     }
 }

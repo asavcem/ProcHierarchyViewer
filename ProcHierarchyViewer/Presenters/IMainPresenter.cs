@@ -1,4 +1,4 @@
-using ProcHierarchyViewer.Models;
+ï»¿using ProcHierarchyViewer.Models;
 using ProcHierarchyViewer.Models.Enums;
 using System;
 using System.Collections.Generic;
@@ -7,31 +7,40 @@ namespace ProcHierarchyViewer.Presenters
 {
     public interface IMainPresenter
     {
-        /// <summary>View'den kullanıcı girdilerini alır. (DownStream)</summary>
+        /// <summary>View'den kullanÄ±cÄ± girdilerini alÄ±r. (DownStream)</summary>
         void LoadHierarchy_DownStream(IEnumerable<string> roots);
 
-        /// <summary>View'den kullanıcı girdilerini alır. (UpStream)</summary>
+        /// <summary>View'den kullanÄ±cÄ± girdilerini alÄ±r. (UpStream)</summary>
         void LoadHierarchy_UpStream(IEnumerable<string> roots);
 
-        /// <summary>TreeView için oluşturulan ProcNode listesini döner.</summary>
+        /// <summary>TreeView iÃ§in oluÅŸturulan ProcNode listesini dÃ¶ner.</summary>
         event Action<List<ProcNode>> OnHierarchyBuilt;
 
-        /// <summary>Bulunamayan SP isimlerini döner.</summary>
+        /// <summary>Bulunamayan SP isimlerini dÃ¶ner.</summary>
         event Action<IEnumerable<string>> OnNotFound;
 
-        /// <summary>Dönen SP listesi içinde arama yapar.</summary>
+        /// <summary>DÃ¶nen SP listesi iÃ§inde arama yapar.</summary>
         void SearchProcNode(IEnumerable<ProcNode> procNode, string term);
 
-        /// <summary>Liste içerisinde olan SP bilgileri.</summary>
+        /// <summary>Liste iÃ§erisinde olan SP bilgileri.</summary>
         event Action<ProcNode> OnFindProcNode;
 
-        /// <summary>Liste içerisinde bulunamayan SP bilgisi.</summary>
+        /// <summary>Liste iÃ§erisinde bulunamayan SP bilgisi.</summary>
         event Action<string> OnNotProcNode;
 
-        /// <summary>Aktif yön değişimini Presenter katmanında ele alır.</summary>
+        /// <summary>Aktif yÃ¶n deÄŸiÅŸimini Presenter katmanÄ±nda ele alÄ±r.</summary>
         void ChangeDirection(DirectionType_Stream direction);
 
-        /// <summary>View'de gösterilecek mod başlığı bilgisini döner.</summary>
+        /// <summary>Object Explorer iÃ§in stored procedure listesini yÃ¼kler.</summary>
+        void LoadStoredProcedures();
+
+        /// <summary>YÃ¼klenen stored procedure isimlerini dÃ¶ner.</summary>
+        event Action<IEnumerable<string>> OnStoredProceduresLoaded;
+
+        /// <summary>Stored procedure listesi yÃ¼klenirken oluÅŸan hatayÄ± dÃ¶ner.</summary>
+        event Action<string> OnStoredProceduresLoadFailed;
+
+        /// <summary>View'de gÃ¶sterilecek mod baÅŸlÄ±ÄŸÄ± bilgisini dÃ¶ner.</summary>
         event Action<string, DirectionType_Stream> OnModeHeaderChanged;
     }
 }

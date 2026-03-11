@@ -137,5 +137,12 @@ namespace ProcHierarchyViewer.Services
 
             return null;
         }
+
+        public IReadOnlyList<string> GetStoredProcedureNames()
+        {
+            return _repo.GetStoredProcedureNames()
+                .OrderBy(name => name)
+                .ToList();
+        }
     }
 }
